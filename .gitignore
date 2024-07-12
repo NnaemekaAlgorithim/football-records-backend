@@ -131,7 +131,7 @@ prod.env
 .env
 env/
 venv/
-soccer-env/
+soccer_env/
 virtual1/
 ENV/
 env.bak/
