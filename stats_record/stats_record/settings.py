@@ -94,6 +94,11 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+    'football_app.backends.EmailBackend',  # Custom backend supporting email authentication
+]
+
 WSGI_APPLICATION = 'stats_record.wsgi.application'
 
 

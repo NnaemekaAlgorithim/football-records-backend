@@ -2,6 +2,8 @@ from rest_framework import serializers
 from ..models import CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)  # Ensure email is required
+    
     class Meta:
         model = CustomUser
         fields = '__all__'

@@ -58,6 +58,7 @@ mccabe
 mypy-extensions
 oauthlib
 packaging
+path
 pathspec
 phonenumbers
 pi
