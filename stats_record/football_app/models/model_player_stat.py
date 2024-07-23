@@ -22,12 +22,8 @@ class PlayerStats(BaseModel):
         match_type (CharField): The type of match.
         control_success (IntegerField): Number of successful controls.
         control_fail (IntegerField): Number of failed controls.
-        short_pass_success (IntegerField): Number of successful short passes.
-        short_pass_fail (IntegerField): Number of failed short passes.
         duel_success (IntegerField): Number of successful duels.
         duel_fail (IntegerField): Number of failed duels.
-        long_pass_success (IntegerField): Number of successful long passes.
-        long_pass_fail (IntegerField): Number of failed long passes.
         dribble_success (IntegerField): Number of successful dribbles.
         dribble_fail (IntegerField): Number of failed dribbles.
         cross_success (IntegerField): Number of successful crosses.
@@ -79,12 +75,8 @@ class PlayerStats(BaseModel):
     match_type = models.CharField(max_length=128)
     control_success = models.IntegerField(default=0)
     control_fail = models.IntegerField(default=0)
-    short_pass_success = models.IntegerField(default=0)
-    short_pass_fail = models.IntegerField(default=0)
     duel_success = models.IntegerField(default=0)
     duel_fail = models.IntegerField(default=0)
-    long_pass_success = models.IntegerField(default=0)
-    long_pass_fail = models.IntegerField(default=0)
     dribble_success = models.IntegerField(default=0)
     dribble_fail = models.IntegerField(default=0)
     cross_success = models.IntegerField(default=0)

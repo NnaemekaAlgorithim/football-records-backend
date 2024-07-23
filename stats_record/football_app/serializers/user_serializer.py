@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from ..models import CustomUser
+from .base_serializer import BaseModelSerializer
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(BaseModelSerializer):
     email = serializers.EmailField(required=True)  # Ensure email is required
     
-    class Meta:
+    class Meta(BaseModelSerializer.Meta):
         model = CustomUser
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
@@ -18,8 +19,9 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def validate(self, data):
-        if data.get('is_player') and not data.get('user_team') or data.get('user_height') or data.get('user_age'):
-            raise serializers.ValidationError("Players must belong to a team, provide their height and age.")
+        if data.get('is_player'):
+            if not data.get('user_team') or not data.get('user_height') or not data.get('user_age'):
+                raise serializers.ValidationError("Players must belong to a team, provide their height and age.")
         return data
 
 class LoginSerializer(serializers.Serializer):
