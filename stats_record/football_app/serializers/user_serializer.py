@@ -2,27 +2,30 @@ from rest_framework import serializers
 from ..models import CustomUser
 from .base_serializer import BaseModelSerializer
 
-class UserSerializer(BaseModelSerializer):
-    email = serializers.EmailField(required=True)  # Ensure email is required
-    
-    class Meta(BaseModelSerializer.Meta):
-        model = CustomUser
-        fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}}
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    password_confirmation = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
 
-    def create(self, validated_data):
-        groups = validated_data.pop('groups', [])
-        user_permissions = validated_data.pop('user_permissions', [])
-        user = CustomUser.objects.create_user(**validated_data)
-        user.groups.set(groups)  # Assign groups after the user is created
-        user.user_permissions.set(user_permissions)  # Assign user_permissions after the user is created
-        return user
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email', 'password', 'password_confirmation')
 
     def validate(self, data):
-        if data.get('is_player'):
-            if not data.get('user_team') or not data.get('user_height') or not data.get('user_age'):
-                raise serializers.ValidationError("Players must belong to a team, provide their height and age.")
+        password = data.get('password')
+        password_confirmation = data.get('password_confirmation')
+
+        if password != password_confirmation:
+            raise serializers.ValidationError({"password_confirmation": "Passwords do not match."})
+
         return data
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = CustomUser.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
