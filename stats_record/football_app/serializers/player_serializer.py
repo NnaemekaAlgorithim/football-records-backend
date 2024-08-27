@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from ..models import PlayerStats
+from ..models.player_model import Player
 from .base_serializer import BaseModelSerializer
 
-class PlayerStatsSerializer(BaseModelSerializer):
+class PlayerSerializer(BaseModelSerializer):
     class Meta(BaseModelSerializer.Meta):
-        model = PlayerStats
+        model = Player
         fields = '__all__'

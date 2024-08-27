@@ -1,6 +1,5 @@
 from uuid import uuid4
 from django.db import models
-from django.forms import ValidationError
 from .base_model import BaseModel
 
 class PlayerStats(BaseModel):
@@ -8,26 +7,22 @@ class PlayerStats(BaseModel):
     
     Attributes:
         stat_id (UUIDField): The statistics ID (primary key).
-        CustomUser (ForeignKey): The ID of the user (foreign key).
-        current_team (CharField): The name of current team.
-        previous_team (CharField): The name of the player's previous team.
+        player (ForeignKey): The player these statistics belong to.
+        current_team (ForeignKey): The current team of the player.
+        previous_team (ForeignKey): The previous team of the player.
         joined_team_at (CharField): When the player joined the team.
         left_team_at (CharField): When the player left the team.
-        season_played (CharField): The season the statistics were recorded.
+        season_played (ForeignKey): The season the statistics were recorded.
         match_half_played (CharField): The match half played.
         start_match (BooleanField): Whether the player started the match.
         sub_in_at (CharField): The time the player was substituted in.
         sub_out_at (CharField): The time the player was substituted out.
         opposing_team (CharField): The opposing team.
-        match_type (CharField): The type of match.
+        match_type (ForeignKey): The type of match.
         control_success (IntegerField): Number of successful controls.
         control_fail (IntegerField): Number of failed controls.
-        short_pass_success (IntegerField): Number of successful short passes.
-        short_pass_fail (IntegerField): Number of failed short passes.
         duel_success (IntegerField): Number of successful duels.
         duel_fail (IntegerField): Number of failed duels.
-        long_pass_success (IntegerField): Number of successful long passes.
-        long_pass_fail (IntegerField): Number of failed long passes.
         dribble_success (IntegerField): Number of successful dribbles.
         dribble_fail (IntegerField): Number of failed dribbles.
         cross_success (IntegerField): Number of successful crosses.
@@ -63,28 +58,25 @@ class PlayerStats(BaseModel):
         assists (IntegerField): Number of assists.
         throw_in_success (IntegerField): Number of successful throw-ins.
         throw_in_fail (IntegerField): Number of failed throw-ins.
+        goal_scored_time (JSONField): List of times when goals were scored.
     """
     stat_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    player = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='player_stats', limit_choices_to={'is_player': True})
-    current_team = models.CharField(max_length=128)
-    previous_team = models.CharField(max_length=128, null=True, blank=True)
+    player = models.ForeignKey('Player', on_delete=models.CASCADE, related_name='player_stats')
+    current_team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='current_team_stats')
+    previous_team = models.ForeignKey('Team', on_delete=models.CASCADE, related_name='previous_team_stats', null=True, blank=True)
     joined_team_at = models.CharField(max_length=128, null=True, blank=True)
     left_team_at = models.CharField(max_length=128, null=True, blank=True)
-    season_played = models.CharField(max_length=128, null=True, blank=True)
+    season_played = models.ForeignKey('Season', on_delete=models.CASCADE, related_name='player_stats', null=True)
     match_half_played = models.CharField(max_length=128, null=True, blank=True)
     start_match = models.BooleanField(default=False)
     sub_in_at = models.CharField(max_length=128, null=True, blank=True)
     sub_out_at = models.CharField(max_length=128, null=True, blank=True)
     opposing_team = models.CharField(max_length=128)
-    match_type = models.CharField(max_length=128)
+    match_type = models.ForeignKey('Match', on_delete=models.CASCADE, related_name='player_stats')
     control_success = models.IntegerField(default=0)
     control_fail = models.IntegerField(default=0)
-    short_pass_success = models.IntegerField(default=0)
-    short_pass_fail = models.IntegerField(default=0)
     duel_success = models.IntegerField(default=0)
     duel_fail = models.IntegerField(default=0)
-    long_pass_success = models.IntegerField(default=0)
-    long_pass_fail = models.IntegerField(default=0)
     dribble_success = models.IntegerField(default=0)
     dribble_fail = models.IntegerField(default=0)
     cross_success = models.IntegerField(default=0)
@@ -120,11 +112,7 @@ class PlayerStats(BaseModel):
     assists = models.IntegerField(default=0)
     throw_in_success = models.IntegerField(default=0)
     throw_in_fail = models.IntegerField(default=0)
+    goal_scored_time = models.JSONField(default=list, help_text="List of times when goals were scored")
 
     def __str__(self):
         return f"Stats for {self.player} in {self.season_played}"
-    
-    def save(self, *args, **kwargs):
-        if not self.player.is_player:
-            raise ValidationError("The user must be a player.")
-        super().save(*args, **kwargs)

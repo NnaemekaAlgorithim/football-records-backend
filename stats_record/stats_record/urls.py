@@ -24,6 +24,10 @@ from football_app.views.team_view import TeamListCreateView, TeamDetailView
 from football_app.views.team_stat_view import TeamStatsListCreateView, TeamStatsDetailView
 from football_app.views.user_view import UserListCreateView, UserDetailView
 from football_app.views.registration_and_login import LoginView, RegisterView
+from football_app.views.match_view import MatchDetailView, MatchListCreateView
+from football_app.views.league_view import LeagueDetailView, LeagueListCreateView
+from football_app.views.player_view import PlayerDetailView, PlayerListCreateView
+from football_app.views.season_view import SeasonDetailView, SeasonListCreateView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -50,6 +54,14 @@ urlpatterns = [
     path('team-stats/<uuid:pk>/', TeamStatsDetailView.as_view(), name='team-stats-detail'),
     path('users/', UserListCreateView.as_view(), name='user-list-create'),
     path('users/<uuid:pk>/', UserDetailView.as_view(), name='user-detail'),
+    path('matches/', MatchListCreateView.as_view(), name='match-list-create'),
+    path('matches/<uuid:pk>/', MatchDetailView.as_view(), name='match-detail'),
+    path('leagues/', LeagueListCreateView.as_view(), name='league-list-create'),
+    path('leagues/<uuid:pk>/', LeagueDetailView.as_view(), name='league-detail'),
+    path('players/', PlayerListCreateView.as_view(), name='player-list-create'),
+    path('players/<uuid:pk>/', PlayerDetailView.as_view(), name='player-detail'),
+    path('seasons/', SeasonListCreateView.as_view(), name='season-list-create'),
+    path('seasons/<uuid:pk>/', SeasonDetailView.as_view(), name='season-detail'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
