@@ -18,7 +18,7 @@ class League(BaseModel):
     country = models.CharField(max_length=128)
     founded_year = models.IntegerField()
     logo = models.ImageField(upload_to='league_logos/', null=True, blank=True)
-    teams = models.ManyToManyField('Team', related_name='leagues')
+    teams = models.ManyToManyField('Team', related_name='leagues', blank=True)
 
     def __str__(self):
         return self.name
