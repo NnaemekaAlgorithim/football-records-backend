@@ -38,7 +38,7 @@ HOST = os.environ.get('HOST')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1", "44.201.56.86"]
 
 AUTH_USER_MODEL = 'football_app.CustomUser'
 
