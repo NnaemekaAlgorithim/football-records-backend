@@ -13,7 +13,7 @@ class CustomUser(AbstractUser, BaseModel):
         User_primary_position (CharField): The user's primary position.
         subscribed (BooleanField): Indicates if a user is subscribed.
         user_team (ForeignKey): The ID of the team the user belongs to.
-        user_image (File): The user's profile image.
+        user_image (File): The user's profile image should be a professional headshot.
     """
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_age = models.IntegerField(null=True, blank=True)
