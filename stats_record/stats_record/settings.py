@@ -29,7 +29,7 @@ load_dotenv(dotenv_path=env_path)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEVELOPMENT = os.environ.get('DEVELOPMENT')
+DEVELOPMENT = False
 NAME = os.environ.get('NAME')
 USER = os.environ.get('USER')
 PASSWORD = os.environ.get('PASSWORD')
