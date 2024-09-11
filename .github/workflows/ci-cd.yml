@@ -23,15 +23,6 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Migrations
-        run: |
-          python3 manage.py makemigrations
-          python3 manage.py migrate
-
-      - name: Collect Static Files
-        run: |
-          python3 manage.py collectstatic --noinput
-
       - name: Deploy via SSH and Restart Services
         env:
           HOST: ${{ secrets.DEV_SERVER_HOST }}
@@ -52,6 +43,7 @@ jobs:
             cd /home/ubuntu/football-records-backend/stats_record
 
             # Run migrations
+            python3 manage.py makemigrations
             python3 manage.py migrate
 
             # Collect static files
