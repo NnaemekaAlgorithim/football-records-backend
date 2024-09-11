@@ -27,9 +27,14 @@ jobs:
         env:
           HOST: ${{ secrets.DEV_SERVER_HOST }}
           USER: ${{ secrets.DEV_SERVER_USER }}
-          KEY: ${{ secrets.DEV_SERVER_SSH_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SSH_KEY }}
         run: |
-          ssh -i $KEY $USER@$HOST << 'EOF'
+          # Create SSH key file
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+
+          # SSH into the server
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $USER@$HOST << 'EOF'
             cd /home/ubuntu/football-records-backend/
 
             # Pull the latest code from GitHub
@@ -53,3 +58,7 @@ jobs:
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
           EOF
+
+      - name: Remove SSH Key
+        run: |
+          rm private_key.pem
