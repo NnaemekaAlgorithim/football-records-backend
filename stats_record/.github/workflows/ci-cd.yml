@@ -1,0 +1,60 @@
+name: Django Football Stats CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Development Server
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Migrations
+        run: |
+          python3 manage.py makemigrations
+          python3 manage.py migrate
+
+      - name: Collect Static Files
+        run: |
+          python3 manage.py collectstatic --noinput
+
+      - name: Deploy via SSH and Restart Services
+        env:
+          HOST: ${{ secrets.DEV_SERVER_HOST }}
+          USER: ${{ secrets.DEV_SERVER_USER }}
+          KEY: ${{ secrets.DEV_SERVER_SSH_KEY }}
+        run: |
+          ssh -i $KEY $USER@$HOST << 'EOF'
+            cd /home/ubuntu/football-records-backend/
+
+            # Pull the latest code from GitHub
+            git pull origin main
+
+            # Install dependencies
+            python3 -m pip install --upgrade pip
+            pip install -r requirements.txt
+
+            # move to the folder where manage.py exists
+            cd /home/ubuntu/football-records-backend/stats_record
+
+            # Run migrations
+            python3 manage.py migrate
+
+            # Collect static files
+            python3 manage.py collectstatic --noinput
+
+            # Restart Gunicorn and Nginx
+            sudo systemctl restart gunicorn
+            sudo systemctl restart nginx
+          EOF
