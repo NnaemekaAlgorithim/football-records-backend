@@ -12,7 +12,6 @@ class PlayerListCreateView(BaseListCreateView):
     permission_classes = [IsSuperAdminOrDenyDelete]
 
 
-
 class PlayerDetailView(BaseRetrieveUpdateDestroyView):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
